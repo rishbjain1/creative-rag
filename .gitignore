@@ -9,3 +9,11 @@ dist/
 build/
 .pytest_cache/
 .DS_Store
+
+# terraform
+deploy/.terraform/
+deploy/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example

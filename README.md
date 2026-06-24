@@ -86,6 +86,32 @@ is gitignored — only code is tracked.
 pytest tests/ -q
 ```
 
+## Deploy (Docker + Terraform on AWS Fargate)
+
+The service containerizes (PyTorch + bge models + a sample index baked in, so the
+image is self-contained) and deploys to ECS Fargate via Terraform (`deploy/`):
+ECR + ECS cluster + task + service on the default VPC, with CloudWatch logs.
+
+```bash
+# 1. build + push the image
+aws ecr create-repository --repository-name creative-rag    # or let terraform make it
+docker build -t creative-rag .
+aws ecr get-login-password | docker login --username AWS --password-stdin <acct>.dkr.ecr.<region>.amazonaws.com
+docker tag creative-rag <acct>.dkr.ecr.<region>.amazonaws.com/creative-rag:latest
+docker push <acct>.dkr.ecr.<region>.amazonaws.com/creative-rag:latest
+
+# 2. provision + run
+cd deploy
+terraform init
+terraform apply -var image_tag=latest        # ANTHROPIC_API_KEY via task secret in prod
+
+# 3. tear down (no ongoing cost)
+terraform destroy
+```
+
+Fargate task CPU/memory default to 1 vCPU / 4GB (torch needs the headroom). The
+config is `terraform validate`-clean.
+
 ## License
 
 MIT
