@@ -1,0 +1,12 @@
+{"q": "How many customers are from the US?", "gold_sql": "SELECT COUNT(*) FROM customers WHERE country = 'US'"}
+{"q": "What is the name of the most expensive product?", "gold_sql": "SELECT name FROM products ORDER BY price DESC LIMIT 1"}
+{"q": "How many orders have status 'paid'?", "gold_sql": "SELECT COUNT(*) FROM orders WHERE status = 'paid'"}
+{"q": "What is the total revenue (quantity times price) from paid orders?", "gold_sql": "SELECT SUM(oi.quantity * p.price) FROM order_items oi JOIN orders o ON oi.order_id = o.id JOIN products p ON oi.product_id = p.id WHERE o.status = 'paid'"}
+{"q": "Which customer placed the most orders? Return their name.", "gold_sql": "SELECT c.name FROM customers c JOIN orders o ON o.customer_id = c.id GROUP BY c.id ORDER BY COUNT(*) DESC LIMIT 1"}
+{"q": "How many products are in the 'film' category?", "gold_sql": "SELECT COUNT(*) FROM products WHERE category = 'film'"}
+{"q": "List the distinct countries customers are from.", "gold_sql": "SELECT DISTINCT country FROM customers ORDER BY country"}
+{"q": "What is the total quantity sold of the product named 'Cinestill 800T'?", "gold_sql": "SELECT SUM(oi.quantity) FROM order_items oi JOIN products p ON oi.product_id = p.id WHERE p.name = 'Cinestill 800T'"}
+{"q": "How many orders were refunded?", "gold_sql": "SELECT COUNT(*) FROM orders WHERE status = 'refunded'"}
+{"q": "What is the average product price?", "gold_sql": "SELECT AVG(price) FROM products"}
+{"q": "Which product category has the highest total of product prices?", "gold_sql": "SELECT category FROM products GROUP BY category ORDER BY SUM(price) DESC LIMIT 1"}
+{"q": "How many customers signed up in March 2025?", "gold_sql": "SELECT COUNT(*) FROM customers WHERE signup_date LIKE '2025-03%'"}

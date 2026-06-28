@@ -50,6 +50,26 @@ crag-eval --qa eval/qa_craft.jsonl --with-llm
 crag-eval --qa eval/qa_craft.jsonl --gate
 ```
 
+## Text→SQL agent eval
+
+A second eval for an **agentic** task: a text→SQL agent (`creative_rag/sqlagent.py`)
+over a bundled SQLite analytics DB (`eval/sql/schema.sql`), scored by **execution
+accuracy** — does the agent's predicted query return the same rows as a reference
+query (`eval/sql/qa_sql.jsonl`). Also enforces a hard **safety** signal: the agent
+must only ever emit a single read-only SELECT.
+
+```bash
+crag-sql-eval                 # offline: validate every reference query is a safe, runnable SELECT
+crag-sql-eval --with-llm      # run the agent → execution accuracy + cost (needs LLM key)
+crag-sql-eval --with-llm --gate --min-accuracy 0.8
+```
+
+CI runs the offline gate (`crag-sql-eval --gate`) — reference SQL validity, no
+model needed. The full agent run (`--with-llm`) reports execution accuracy and
+per-run cost (via `obs`), and gates on accuracy + zero safety violations.
+
+Baseline (12 questions): **execution accuracy 0.917, 0 safety violations**, cost ~$0.05.
+
 ## Sample corpus (CI)
 
 The real corpus is personal + gitignored, so CI can't rebuild it. `eval/sample_corpus/`

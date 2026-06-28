@@ -41,6 +41,9 @@ jobs:
             --out eval/metrics_sample.json \
             --min-hit 1.0 --min-mrr 0.9 --min-ndcg 0.9
 
+      - name: SQL agent eval — validate reference queries (offline gate)
+        run: crag-sql-eval --gate
+
       - name: Upload metrics
         if: always()
         uses: actions/upload-artifact@v4

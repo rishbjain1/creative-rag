@@ -22,6 +22,7 @@ dev = ["pytest>=8"]
 crag = "creative_rag.cli:main"
 creative-rag = "creative_rag.api:main"
 crag-eval = "creative_rag.evaluate:main"
+crag-sql-eval = "creative_rag.sqleval:main"
 
 [build-system]
 requires = ["setuptools>=68"]
