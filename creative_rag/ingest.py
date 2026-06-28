@@ -60,6 +60,15 @@ def _window(body: str) -> list[str]:
     return out
 
 
+def index_text(c: dict) -> str:
+    """Text used for retrieval (dense embedding + BM25) — the heading prepended to
+    the body. The heading is often the most informative line ("AUDIO RULE", "TOOL
+    ORDER — Soul 2.0 is primary"); indexing body-only misses it. Display/citation
+    still use the raw body (`text`); only the retrieval signal changes."""
+    heading = c.get("heading", "")
+    return f"{heading}\n{c['text']}" if heading else c["text"]
+
+
 def chunk_doc(source: str, text: str) -> list[dict]:
     chunks = []
     for heading, body in _split_sections(text):
@@ -88,7 +97,7 @@ def build() -> dict:
     config.INDEX_DIR.mkdir(parents=True, exist_ok=True)
     config.CHUNKS_PATH.write_text(json.dumps(all_chunks, indent=2))
 
-    vectors = embed.embed_texts([c["text"] for c in all_chunks])
+    vectors = embed.embed_texts([index_text(c) for c in all_chunks])
     client = chromadb.PersistentClient(path=str(config.CHROMA_DIR))
     try:
         client.delete_collection(config.COLLECTION)

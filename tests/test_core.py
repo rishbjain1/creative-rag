@@ -29,6 +29,16 @@ def test_chunk_doc_fallback_no_headings():
     assert len(chunks) == 1 and chunks[0]["text"]
 
 
+def test_index_text_prepends_heading():
+    # the heading must be in the retrieval text so heading-only terms are findable
+    assert ingest.index_text({"heading": "AUDIO RULE", "text": "no music, diegetic SFX"}) \
+        == "AUDIO RULE\nno music, diegetic SFX"
+
+
+def test_index_text_body_only_when_no_heading():
+    assert ingest.index_text({"heading": "", "text": "body only"}) == "body only"
+
+
 # --- fusion + tokenization ---
 def test_rrf_rewards_top_ranks():
     a = ["x", "y", "z"]

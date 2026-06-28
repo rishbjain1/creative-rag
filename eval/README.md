@@ -61,15 +61,18 @@ point `--qa` and the index env at any (corpus, set) pair.
 
 | layer | metric | value |
 |---|---|---|
-| retrieval | hit@6 | 0.917 |
-| retrieval | MRR | 0.868 |
-| retrieval | nDCG@6 | 0.626 |
-| retrieval | recall@6 | 0.591 |
-| generation | correctness | 0.958 |
-| generation | faithfulness | 0.958 |
+| retrieval | hit@6 | 1.000 |
+| retrieval | MRR | 0.938 |
+| retrieval | nDCG@6 | 0.690 |
+| retrieval | recall@6 | 0.644 |
+| generation | correctness | 1.000 |
+| generation | faithfulness | 1.000 |
 
-Two retrieval questions miss (audio-rule, primary-generator): the answer chunk exists
-but the retriever ranks a near-miss above it. One correctness miss (audio-rule, a
-downstream effect of that retrieval miss) and one faithfulness miss (low-angle, where
-citation-verify caught an unsupported claim) — real, eval-surfaced gaps and the first
-targets for the next retrieval/grounding improvement. That is the harness doing its job.
+**Eval-driven improvement (worked example).** The first run scored hit@6=0.917 with
+two misses (audio-rule, primary-generator). Both were heading-vs-body gaps: the
+answering term lived in the section *heading* ("AUDIO RULE", "Soul 2.0 is primary")
+but only the body was indexed. The fix — index `heading + body` across all three
+stages (dense, sparse, **and** the cross-encoder rerank) — took hit@6 to 1.000,
+lifted MRR 0.868→0.938 and nDCG 0.626→0.690, and carried generation correctness and
+faithfulness from 0.958 to 1.000 (better-ranked chunks gave the LLM cleaner grounding).
+This is exactly the loop the harness exists for: measure → find the gap → fix → re-measure.

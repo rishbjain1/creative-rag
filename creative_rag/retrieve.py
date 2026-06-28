@@ -9,6 +9,7 @@ import json
 import re
 
 from . import config, embed
+from .ingest import index_text
 
 
 def _tokenize(text: str) -> list[str]:
@@ -22,7 +23,7 @@ class Retriever:
 
         self.chunks = json.loads(config.CHUNKS_PATH.read_text())
         self.by_id = {c["id"]: c for c in self.chunks}
-        self.bm25 = BM25Okapi([_tokenize(c["text"]) for c in self.chunks])
+        self.bm25 = BM25Okapi([_tokenize(index_text(c)) for c in self.chunks])
         self._ids = [c["id"] for c in self.chunks]
         client = chromadb.PersistentClient(path=str(config.CHROMA_DIR))
         self.col = client.get_collection(config.COLLECTION)
@@ -52,7 +53,7 @@ class Retriever:
         fused = self._rrf(dense, sparse)[: config.RERANK_CANDIDATES]
         if not fused:
             return []
-        texts = [self.by_id[cid]["text"] for cid in fused]
+        texts = [index_text(self.by_id[cid]) for cid in fused]
         scores = embed.rerank(query, texts)
         order = sorted(range(len(fused)), key=lambda i: scores[i], reverse=True)
         out = []
