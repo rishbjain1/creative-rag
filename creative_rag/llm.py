@@ -8,10 +8,11 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 
 import httpx
 
-from . import config
+from . import config, obs
 
 
 def _key() -> str:
@@ -22,19 +23,34 @@ def _key() -> str:
 
 
 def chat(messages: list[dict], model: str | None = None) -> str:
+    model = model or config.LLM_MODEL
+    t0 = time.perf_counter()
     resp = httpx.post(
         f"{config.LLM_BASE_URL.rstrip('/')}/chat/completions",
         headers={"Authorization": f"Bearer {_key()}", "Content-Type": "application/json"},
         json={
-            "model": model or config.LLM_MODEL,
+            "model": model,
             "messages": messages,
             "max_tokens": config.LLM_MAX_TOKENS,
         },
         timeout=120,
     )
+    latency_ms = round((time.perf_counter() - t0) * 1000, 1)
     if resp.status_code >= 400:
         raise RuntimeError(f"LLM {resp.status_code}: {resp.text[:500]}")
-    return resp.json()["choices"][0]["message"]["content"]
+    body = resp.json()
+    # Observability: price the call from its token usage and record a span.
+    usage = body.get("usage") or {}
+    in_tok = usage.get("prompt_tokens", 0)
+    out_tok = usage.get("completion_tokens", 0)
+    obs.record({
+        "model": model,
+        "input_tokens": in_tok,
+        "output_tokens": out_tok,
+        "cost_usd": obs.cost_usd(model, in_tok, out_tok),
+        "latency_ms": latency_ms,
+    })
+    return body["choices"][0]["message"]["content"]
 
 
 def chat_json(messages: list[dict], model: str | None = None) -> dict:

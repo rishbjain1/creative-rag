@@ -9,7 +9,7 @@ from __future__ import annotations
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
 
-from . import config, generate
+from . import config, generate, obs
 
 app = FastAPI(title="creative-rag", version="0.1.0")
 
@@ -40,7 +40,10 @@ def query(body: QueryIn, x_api_key: str | None = Header(default=None)) -> dict:
     _auth(x_api_key)
     if not body.query.strip():
         raise HTTPException(status_code=400, detail="query required")
-    return generate.answer(body.query, top_k=body.top_k, verify=body.verify)
+    with obs.request_scope("query") as trace_id:
+        result = generate.answer(body.query, top_k=body.top_k, verify=body.verify)
+        result["usage"] = {"trace_id": trace_id, **obs.summary()}
+    return result
 
 
 def main() -> None:
