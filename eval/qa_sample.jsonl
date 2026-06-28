@@ -1,0 +1,6 @@
+{"q": "What film stock for a night or tungsten/neon scene?", "gold_sources": ["stocks_and_lenses.md"], "gold_phrases": ["Cinestill 800T"], "answer_must_include": ["Cinestill 800T"]}
+{"q": "Which film stock is the warm golden editorial skin stock?", "gold_sources": ["stocks_and_lenses.md"], "gold_phrases": ["Portra 400"], "answer_must_include": ["Portra 400"]}
+{"q": "What lens separates a portrait subject from the background?", "gold_sources": ["stocks_and_lenses.md"], "gold_phrases": ["85mm"], "answer_must_include": ["85mm"]}
+{"q": "What is the primary base-image generator?", "gold_sources": ["tools_and_motion.md"], "gold_phrases": ["Higgsfield Soul 2.0"], "answer_must_include": ["Soul"]}
+{"q": "Which video model is the daily driver at about 85% of shots?", "gold_sources": ["tools_and_motion.md"], "gold_phrases": ["Kling 3.0"], "answer_must_include": ["Kling"]}
+{"q": "What feeling does a dolly-in create?", "gold_sources": ["tools_and_motion.md"], "gold_phrases": ["Dolly in"], "answer_must_include": ["intimacy"]}

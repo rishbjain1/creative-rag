@@ -51,6 +51,18 @@ an API backend can swap in without touching retrieval.
 Generation + verification go through any **OpenAI-compatible** endpoint —
 Anthropic (default), OpenRouter, OpenAI, local — chosen by env. No provider hard-coded.
 
+## Part of the studio trio
+
+creative-rag is the knowledge layer of a three-part AI film pipeline:
+
+- **`ai-content-pipeline` skill** — the method (plan → lock → stills → animate → cut)
+- **[studio-mcp](https://github.com/rishbjain1/studio-mcp)** — the tools; its
+  `craft_lookup` tool calls this service's `/query` to ground prompts
+- **creative-rag** (this repo) — the cited, verified craft knowledge base
+
+Run this service on `:8000` and studio-mcp's `craft_lookup` grounds every prompt in it.
+Architecture + the end-to-end smoke test: [studio-mcp/INTEGRATION.md](https://github.com/rishbjain1/studio-mcp/blob/main/INTEGRATION.md).
+
 ## Install
 
 ```bash
@@ -85,6 +97,23 @@ is gitignored — only code is tracked.
 ```bash
 pytest tests/ -q
 ```
+
+## Eval
+
+Offline eval harness over a labeled set — measures the retriever (`hit@k`,
+`recall@k`, `MRR`, `nDCG@k`) and the generated answer (`correctness`,
+`faithfulness`). This is the regression layer on top of the runtime
+`citation-verify` guardrail: it tells you whether a change helps or hurts.
+
+```bash
+crag-eval --qa eval/qa_craft.jsonl                 # retrieval metrics (no key)
+crag-eval --qa eval/qa_craft.jsonl --with-llm      # + generation metrics
+crag-eval --qa eval/qa_craft.jsonl --gate          # nonzero exit on regression
+```
+
+Labels pin the *answer* (source + phrase), not chunk ids, so they survive a
+reingest. CI (`.github/workflows/eval.yml`) ingests a committed sample corpus and
+gates retrieval on it every push. Details + baseline: [eval/README.md](eval/README.md).
 
 ## Deploy (Docker + Terraform on AWS Fargate)
 

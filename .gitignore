@@ -4,6 +4,9 @@ __pycache__/
 .env
 .env.local
 index/
+# eval: keep sample_corpus/ + qa_*.jsonl tracked; ignore generated artifacts
+eval/.sample_index/
+eval/metrics_*.json
 *.egg-info/
 dist/
 build/

@@ -21,6 +21,7 @@ dev = ["pytest>=8"]
 [project.scripts]
 crag = "creative_rag.cli:main"
 creative-rag = "creative_rag.api:main"
+crag-eval = "creative_rag.evaluate:main"
 
 [build-system]
 requires = ["setuptools>=68"]
