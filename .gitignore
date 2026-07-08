@@ -4,7 +4,8 @@ __pycache__/
 .env
 .env.local
 index/
-# eval: keep sample_corpus/ + qa_*.jsonl tracked; ignore generated artifacts
+# eval: keep the public sample set + SQL set; ignore the private-corpus set + artifacts
+eval/qa_craft.jsonl
 eval/.sample_index/
 eval/metrics_*.json
 *.egg-info/

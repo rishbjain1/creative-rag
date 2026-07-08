@@ -13,7 +13,7 @@ ANSWER: ... Cinestill 800T (tungsten-balanced, teal shadows) at the day→night
 transition [5][6]; 85mm f/1.4 for faces, 14–35mm wide [5]. The notes don't give a
 beach-specific lighting recipe — fill direction/sources yourself [2].
 
-SOURCES: [5] Cinematic_Prompt_Library.md §Campaign Lock ... [6] §Film Stocks ...
+SOURCES: [5] craft_library.md §Campaign Lock ... [6] §Film Stocks ...
 VERIFY:  {"supported": true, "unsupported_claims": []}
 ```
 

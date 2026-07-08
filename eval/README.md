@@ -17,8 +17,8 @@ whether a change **helps or hurts** and put a number on quality.
 A labeled item (`*.jsonl`):
 
 ```json
-{"q": "...", "gold_sources": ["Cinematic_Prompt_Library.md"],
- "gold_phrases": ["Cinestill 800T"], "answer_must_include": ["Cinestill 800T"]}
+{"q": "...", "gold_sources": ["craft_library.md"],
+ "gold_phrases": ["<a phrase from the answering chunk>"], "answer_must_include": ["..."]}
 ```
 
 Gold chunks are resolved at eval time as: **chunk source ∈ `gold_sources` AND a
@@ -38,16 +38,21 @@ Metric notes:
 
 ## Run
 
+The harness is corpus-agnostic — point `--qa` at any labeled set. The shipped
+example is `eval/qa_sample.jsonl` (over the public `eval/sample_corpus/`); the
+author's real-corpus set (`qa_craft.jsonl`) is kept local alongside the private
+corpus and is not tracked.
+
 ```bash
-# retrieval only (fast, no key) — against the real local index
-crag-eval --qa eval/qa_craft.jsonl --out eval/metrics_craft.json
+# retrieval only (fast, no key)
+crag-eval --qa eval/qa_sample.jsonl --out eval/metrics.json
 
 # + generation metrics (needs CRAG_LLM_API_KEY / ANTHROPIC_API_KEY)
 set -a; source .env; set +a
-crag-eval --qa eval/qa_craft.jsonl --with-llm
+crag-eval --qa eval/qa_sample.jsonl --with-llm
 
 # regression gate (nonzero exit if below thresholds)
-crag-eval --qa eval/qa_craft.jsonl --gate
+crag-eval --qa eval/qa_sample.jsonl --gate
 ```
 
 ## Text→SQL agent eval
@@ -77,7 +82,7 @@ is a tiny self-contained craft corpus with `eval/qa_sample.jsonl`; CI ingests it
 gates retrieval on it (`.github/workflows/eval.yml`). The harness is corpus-agnostic —
 point `--qa` and the index env at any (corpus, set) pair.
 
-## Baseline (real corpus, 24 Q, k=6)
+## Baseline (author's real corpus — private, 24 Q, k=6)
 
 | layer | metric | value |
 |---|---|---|
