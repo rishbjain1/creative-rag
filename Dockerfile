@@ -27,5 +27,5 @@ RUN python -c "from creative_rag import embed; embed.embed_texts(['warm up']); e
 COPY sample_corpus ./sample_corpus
 RUN crag ingest
 
-EXPOSE 8000
-CMD ["uvicorn", "creative_rag.api:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 7860
+CMD uvicorn creative_rag.api:app --host 0.0.0.0 --port ${PORT:-7860}

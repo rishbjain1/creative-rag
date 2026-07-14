@@ -2,6 +2,25 @@
 
 **Hybrid-retrieval, citation-verified RAG over a craft/style corpus.**
 
+## [Evaluation results](eval/README.md)
+
+| Metric | Score |
+|---|---:|
+| Retrieval hit@6 | 1.0 |
+| MRR | 0.94 |
+| nDCG | 0.69 |
+| Answer faithfulness | 1.0 |
+| Text→SQL execution accuracy | 0.917 (0 safety violations) |
+| Tests | 40 tests, CI-green |
+
+## Live demo
+
+🚀 Live demo: _deploying to HF Spaces — link coming_
+
+## Why this matters
+
+Hybrid retrieval matters because dense-only misses exact terminology, while BM25-only misses paraphrase. Every answer must cite retrieved chunks, and each citation is verified against its source post-generation, so the system fails loudly instead of hallucinating quietly.
+
 Ask a knowledge base of cinematography + AI-filmmaking notes a real question and
 get a **grounded, cited, verified** answer — not a hallucination. Built to be
 trustworthy: every claim is checked against the retrieved sources.
@@ -30,6 +49,18 @@ query → dense (vector) ─┐
                         → augment (rerank order, grounding instruction)
                         → generate (LLM, answer only from notes, cite)
                         → citation-verify (LLM-judge entailment per claim)
+```
+
+```mermaid
+flowchart LR
+    Q[Query] --> D[Dense: bge-small]
+    Q --> B[BM25]
+    D --> R[RRF fusion]
+    B --> R
+    R --> X[Cross-encoder rerank]
+    X --> G[Grounded generation]
+    G --> V[Citation verification]
+    V --> A[Cited answer]
 ```
 
 - **Dense** catches *meaning*, **sparse (BM25)** catches *exact terms* (stock names, `#hex`, `21:9`); **RRF** fuses them scale-free.

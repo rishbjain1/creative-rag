@@ -4,6 +4,7 @@ __pycache__/
 .env
 .env.local
 index/
+eval/qa_craft.jsonl
 .git/
 .pytest_cache/
 deploy/
