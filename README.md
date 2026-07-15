@@ -15,7 +15,13 @@
 
 ## Live demo
 
-🚀 Live demo: _deploying to HF Spaces — link coming_
+🚀 **[Live demo](https://rishbjain-creative-rag.hf.space)** — `GET /health` · `POST /query` · hosted on [HF Spaces](https://huggingface.co/spaces/rishbjain/creative-rag)
+
+```bash
+curl -X POST https://rishbjain-creative-rag.hf.space/query \
+  -H 'Content-Type: application/json' \
+  -d '{"query": "what film stock for a moody dusk scene?", "top_k": 4}'
+```
 
 ## Why this matters
 
